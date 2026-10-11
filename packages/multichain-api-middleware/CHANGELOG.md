@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump `@open-rpc/meta-schema` from `^1.14.6` to `^1.14.9` ([#10721](https://github.com/MetaMask/core/pull/10721))
 - Bump `@metamask/snaps-controllers` from `^19.0.0` to `^19.0.1` ([#10719](https://github.com/MetaMask/core/pull/10719))
 - Bump `@metamask/rpc-errors` from `^7.0.2` to `^7.0.3` ([#10718](https://github.com/MetaMask/core/pull/10718))
+- Bump `@open-rpc/schema-utils-js` from `^2.0.5` to `^2.2.1` ([#10526](https://github.com/MetaMask/core/pull/10526))
 
 ## [5.0.0]
 
