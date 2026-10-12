@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **BREAKING:** Delegate all Sentinel simulation requests to `@metamask/sentinel-api-service` via the `SentinelApiService:simulateTransactions` messenger action ([#9476](https://github.com/MetaMask/core/pull/9476))
+  - Consumers must construct a `SentinelApiService` and delegate the `SentinelApiService:simulateTransactions` action to the `TransactionController` messenger.
+  - The `getSimulationConfig` constructor option now returns `{ newUrl?: string }` only, as the `authorization` field is no longer supported since authentication headers are handled by the service.
 - Bump `@metamask/rpc-errors` from `^7.0.2` to `^7.0.3` ([#10718](https://github.com/MetaMask/core/pull/10718))
 
 ## [72.2.0]
