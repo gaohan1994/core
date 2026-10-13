@@ -128,25 +128,13 @@ export class MoonPayFrameHandler {
     }
 
     const channelId = payload.meta?.channelId;
-    const state = this.#getState();
 
     // Only honor a completion for the MoonPay frame the flow is currently
     // waiting on. This drops stale or duplicate messages after reset, phase
     // advancement, or a vendor switch so they cannot restore tokens or rewind
     // the flow. Unlike awaited controller work, external frame messages are
     // not protected by the controller's generation guard.
-    let expectedPhase: KycPhase | null = null;
-    if (channelId === CHANNEL_CHECK) {
-      expectedPhase = 'check';
-    } else if (channelId === CHANNEL_AUTH) {
-      expectedPhase = 'auth';
-    }
-
-    if (
-      !expectedPhase ||
-      state.phase !== expectedPhase ||
-      state.activeVendor !== 'moonpay'
-    ) {
+    if (!this.#isAwaitingChannel(channelId)) {
       return {};
     }
 
@@ -176,6 +164,12 @@ export class MoonPayFrameHandler {
         clientToken = credentials.clientToken;
       } catch (error) {
         this.#fail(`Failed to decrypt frame credentials: ${String(error)}`);
+        return {};
+      }
+
+      // Decryption is async, so a duplicate message or a reset may have
+      // advanced the flow in the meantime. Re-check before acting.
+      if (!this.#isAwaitingChannel(channelId)) {
         return {};
       }
     }
@@ -239,6 +233,29 @@ export class MoonPayFrameHandler {
     const url = new URL(`${FRAMES_BASE_URL}/reset`);
     url.searchParams.set('channelId', CHANNEL_RESET);
     return url.toString();
+  }
+
+  /**
+   * Whether the flow is currently waiting on a completion from the given
+   * MoonPay frame channel.
+   *
+   * @param channelId - The channel the message was posted on.
+   * @returns `true` if the message should be honored.
+   */
+  #isAwaitingChannel(channelId: string | undefined): boolean {
+    let expectedPhase: KycPhase | null = null;
+    if (channelId === CHANNEL_CHECK) {
+      expectedPhase = 'check';
+    } else if (channelId === CHANNEL_AUTH) {
+      expectedPhase = 'auth';
+    }
+
+    const state = this.#getState();
+    return (
+      expectedPhase !== null &&
+      state.phase === expectedPhase &&
+      state.activeVendor === 'moonpay'
+    );
   }
 
   async #handleCheckOutcome(
