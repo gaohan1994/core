@@ -79,15 +79,15 @@ export class MoonPayFrameHandler {
   /**
    * Creates a fresh keypair for a new MoonPay flow.
    */
-  startFlow(): void {
-    this.#frameKeypair = generateKeyPair();
+  async startFlow(): Promise<void> {
+    this.#frameKeypair = await generateKeyPair();
   }
 
   /**
    * Ensures an in-progress MoonPay flow has a frame keypair.
    */
-  ensureKeypair(): void {
-    this.#frameKeypair ??= generateKeyPair();
+  async ensureKeypair(): Promise<void> {
+    this.#frameKeypair ??= await generateKeyPair();
   }
 
   /**
@@ -168,7 +168,7 @@ export class MoonPayFrameHandler {
     let clientToken: string | undefined;
     if (credentialsEnvelope && this.#frameKeypair) {
       try {
-        const { credentials } = decryptCredentials(
+        const { credentials } = await decryptCredentials(
           credentialsEnvelope,
           this.#frameKeypair.privateKey,
         );

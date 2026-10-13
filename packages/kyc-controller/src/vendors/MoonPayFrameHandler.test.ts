@@ -102,38 +102,38 @@ function createHandler(stateOverrides: Partial<FrameState> = {}): {
 
 describe('MoonPayFrameHandler', () => {
   describe('startFlow / ensureKeypair / clear', () => {
-    it('creates a keypair that enables the Check-frame URL', () => {
+    it('creates a keypair that enables the Check-frame URL', async () => {
       const { handler } = createHandler();
 
       expect(handler.buildCheckFrameUrl()).toBeNull();
-      handler.startFlow();
+      await handler.startFlow();
 
       const url = handler.buildCheckFrameUrl() as string;
       expect(url).toContain('sessionToken=tok');
       expect(url).toContain('channelId=ch_1');
     });
 
-    it('does not replace an existing keypair on ensureKeypair', () => {
+    it('does not replace an existing keypair on ensureKeypair', async () => {
       const { handler } = createHandler();
-      handler.startFlow();
+      await handler.startFlow();
       const first = handler.buildCheckFrameUrl() as string;
 
-      handler.ensureKeypair();
+      await handler.ensureKeypair();
 
       expect(handler.buildCheckFrameUrl()).toBe(first);
     });
 
-    it('creates a keypair on ensureKeypair when none exists', () => {
+    it('creates a keypair on ensureKeypair when none exists', async () => {
       const { handler } = createHandler();
 
-      handler.ensureKeypair();
+      await handler.ensureKeypair();
 
       expect(handler.buildCheckFrameUrl()).toContain('sessionToken=tok');
     });
 
-    it('drops the keypair and auth client token on clear', () => {
+    it('drops the keypair and auth client token on clear', async () => {
       const { handler } = createHandler();
-      handler.startFlow();
+      await handler.startFlow();
       expect(handler.buildCheckFrameUrl()).not.toBeNull();
 
       handler.clear();
@@ -144,7 +144,7 @@ describe('MoonPayFrameHandler', () => {
 
     it('drops only the auth client token on clearAuthentication', async () => {
       const { handler } = createHandler();
-      handler.startFlow();
+      await handler.startFlow();
       await handler.handleMessage({
         kind: 'complete',
         meta: { channelId: 'ch_1' },
