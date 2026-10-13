@@ -256,7 +256,7 @@ describe('MoonPayFrameHandler', () => {
 
     it('fails when credential decryption throws', async () => {
       const { handler, fail } = createHandler();
-      handler.startFlow();
+      await handler.startFlow();
 
       await handler.handleMessage({
         kind: 'complete',
@@ -271,7 +271,7 @@ describe('MoonPayFrameHandler', () => {
 
     it('ignores a duplicate completion while a prior continuation is in flight', async () => {
       const { handler, onAuthenticated } = createHandler({ phase: 'auth' });
-      handler.startFlow();
+      await handler.startFlow();
       let releaseAuthenticated: () => void = () => {
         // no-op placeholder until the deferred promise is wired up
       };
@@ -299,7 +299,7 @@ describe('MoonPayFrameHandler', () => {
     describe('check frame', () => {
       it('moves to form on an active status with an access token', async () => {
         const { handler, state, onAuthenticated } = createHandler();
-        handler.startFlow();
+        await handler.startFlow();
 
         await handler.handleMessage({
           kind: 'complete',
@@ -317,7 +317,7 @@ describe('MoonPayFrameHandler', () => {
 
       it('moves to auth on connectionRequired and enables the auth frame URL', async () => {
         const { handler, state, onAuthenticated } = createHandler();
-        handler.startFlow();
+        await handler.startFlow();
 
         await handler.handleMessage({
           kind: 'complete',
@@ -365,7 +365,7 @@ describe('MoonPayFrameHandler', () => {
         const { handler, state, onAuthenticated } = createHandler({
           phase: 'auth',
         });
-        handler.startFlow();
+        await handler.startFlow();
 
         await handler.handleMessage({
           kind: 'complete',
@@ -412,23 +412,23 @@ describe('MoonPayFrameHandler', () => {
   });
 
   describe('frame URL builders', () => {
-    it('returns null for the check frame without a session', () => {
+    it('returns null for the check frame without a session', async () => {
       const { handler } = createHandler({ moonpaySessionToken: null });
-      handler.startFlow();
+      await handler.startFlow();
 
       expect(handler.buildCheckFrameUrl()).toBeNull();
     });
 
-    it('returns null for the check frame when the active vendor is not MoonPay', () => {
+    it('returns null for the check frame when the active vendor is not MoonPay', async () => {
       const { handler } = createHandler({ activeVendor: 'iron' });
-      handler.startFlow();
+      await handler.startFlow();
 
       expect(handler.buildCheckFrameUrl()).toBeNull();
     });
 
-    it('returns null for the auth frame without a client token', () => {
+    it('returns null for the auth frame without a client token', async () => {
       const { handler } = createHandler();
-      handler.startFlow();
+      await handler.startFlow();
 
       expect(handler.buildAuthFrameUrl()).toBeNull();
     });
