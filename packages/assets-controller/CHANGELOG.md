@@ -17,6 +17,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump `@metamask/accounts-controller` from `^40.0.0` to `^40.1.0` ([#10851](https://github.com/MetaMask/core/pull/10851))
 - Bump `@metamask/keyring-controller` from `^28.1.0` to `^28.2.0` ([#10851](https://github.com/MetaMask/core/pull/10851))
 
+### Removed
+
+- **BREAKING:** Remove `DetectionMiddleware` and `DetectionMiddlewareOptions`. `TokenDataSource` fetches metadata for response balances, RPC-detected assets, custom assets, and native asset IDs that do not already have an image in `assetsInfo`. `PriceDataSource` fetches spot prices for those same assets when `assetsPrice` has no entry, and still always fetches `request.assetsForPriceUpdate`. Spam filtering still applies only to assets that are not already in state
+- **BREAKING:** Remove the `AssetsController:assetsDetected` event and `AssetsControllerAssetsDetectedEvent`
+- **BREAKING:** Remove the `AssetsController:priceChanged` event and `AssetsControllerPriceChangedEvent`
+- **BREAKING:** Remove the `AssetsController:balanceChanged` event and `AssetsControllerBalanceChangedEvent`. Balance updates are still published through `AssetsController:stateChange`
+- **BREAKING:** Remove `getAssetsBalance`, `getAssetMetadata`, `getAssetsPrice`, and `getCustomAssets`, and their messenger actions. Read balances, metadata, prices, and custom assets from `AssetsController:getState` or `AssetsController:getAssets`
+- **BREAKING:** Stop exposing `hideAsset`, `unhideAsset`, and `removeCustomAsset` as messenger actions. Call those methods on the controller instance
+- **BREAKING:** Remove the exported `BalanceChangeEvent`, `PriceChangeEvent`, `MetadataChangeEvent`, and `AssetsDetectedEvent` types
+- **BREAKING:** Stop exporting helpers with no consumers outside this package: `buildDefaultAssetsInfo`, `getDefaultTrackedAssetsForChain`, `getDefaultAssetMetadata`, `getSnapsAssetsMigrationNamespace`, `isMigrationStageActive`, `isSnapsAssetsMigrationNamespace`, `parseSnapsAssetsMigrationStage`, `createRpcDataSource`, `createSnapDataSource`, `getChainIdsCaveat`, `extractChainFromAssetId`, `normalizeAssetId`, `formatExchangeRatesForBridge`, `formatStateForTransactionPay`, `getGroupIdForAccount`, `getInternalAccountsForGroup`, and the assets-loading selectors
+
 ## [19.0.0]
 
 ### Added
