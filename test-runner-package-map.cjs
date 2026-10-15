@@ -78,7 +78,6 @@ const PACKAGES_ON_JEST = new Set([
   '@metamask/permission-controller',
   '@metamask/permission-log-controller',
   '@metamask/perps-controller',
-  '@metamask/phishing-controller',
   '@metamask/platform-api-docs',
   '@metamask/polling-controller',
   '@metamask/preferences-controller',
